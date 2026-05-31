@@ -1,39 +1,32 @@
-/**
- * Representa um contato da agenda telefônica.
- *
- * <p>Armazena nome, telefone e e-mail de uma pessoa e fornece
- * métodos de acesso (getters/setters) e uma representação textual
- * legível via {@link #toString()}.</p>
- *
- * @author  mathdejesus
- * @version 2.0
- */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
 public class Contato {
 
-    /** Nome completo do contato. */
+    private static final Pattern EMAIL_PATTERN =
+        Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+
     private String nome;
 
-    /** Número de telefone do contato (ex.: {@code (11) 91234-5678}). */
-    private String telefone;
+    private List<String> telefones = new ArrayList<>();
 
-    /** Endereço de e-mail do contato. */
     private String email;
 
     // -------------------------------------------------------------------------
-    // Construtor
+    // Construtores
     // -------------------------------------------------------------------------
 
-    /**
-     * Cria um novo contato com os dados fornecidos.
-     *
-     * @param nome      nome completo; não deve ser {@code null} nem vazio
-     * @param telefone  número de telefone; não deve ser {@code null} nem vazio
-     * @param email     endereço de e-mail; não deve ser {@code null} nem vazio
-     * @throws IllegalArgumentException se qualquer parâmetro for {@code null} ou em branco
-     */
     public Contato(String nome, String telefone, String email) {
         setNome(nome);
         setTelefone(telefone);
+        setEmail(email);
+    }
+
+    public Contato(String nome, List<String> telefones, String email) {
+        setNome(nome);
+        setTelefones(telefones);
         setEmail(email);
     }
 
@@ -41,21 +34,10 @@ public class Contato {
     // Getters e Setters
     // -------------------------------------------------------------------------
 
-    /**
-     * Retorna o nome do contato.
-     *
-     * @return nome do contato
-     */
     public String getNome() {
         return nome;
     }
 
-    /**
-     * Atualiza o nome do contato.
-     *
-     * @param nome novo nome; não pode ser {@code null} nem vazio
-     * @throws IllegalArgumentException se {@code nome} for {@code null} ou em branco
-     */
     public void setNome(String nome) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome não pode ser vazio.");
@@ -63,87 +45,92 @@ public class Contato {
         this.nome = nome.trim();
     }
 
-    /**
-     * Retorna o telefone do contato.
-     *
-     * @return número de telefone
-     */
     public String getTelefone() {
-        return telefone;
+        return telefones.isEmpty() ? "" : telefones.get(0);
     }
 
-    /**
-     * Atualiza o telefone do contato.
-     *
-     * @param telefone novo número; não pode ser {@code null} nem vazio
-     * @throws IllegalArgumentException se {@code telefone} for {@code null} ou em branco
-     */
+    public List<String> getTelefones() {
+        return Collections.unmodifiableList(telefones);
+    }
+
     public void setTelefone(String telefone) {
         if (telefone == null || telefone.isBlank()) {
             throw new IllegalArgumentException("Telefone não pode ser vazio.");
         }
         String trimmed = telefone.trim();
-        long digitCount = trimmed.chars().filter(Character::isDigit).count();
-        if (digitCount < 8) {
-            throw new IllegalArgumentException(
-                "Telefone inválido: " + trimmed + " — deve conter ao menos 8 dígitos."
-            );
-        }
-        this.telefone = trimmed;
+        validarTelefone(trimmed);
+        this.telefones = new ArrayList<>();
+        this.telefones.add(trimmed);
     }
 
-    /**
-     * Retorna o e-mail do contato.
-     *
-     * @return endereço de e-mail
-     */
+    public void setTelefones(List<String> telefones) {
+        if (telefones == null || telefones.isEmpty()) {
+            throw new IllegalArgumentException("Deve haver ao menos um telefone.");
+        }
+        List<String> validadas = new ArrayList<>();
+        for (String tel : telefones) {
+            if (tel == null || tel.isBlank()) continue;
+            String trimmed = tel.trim();
+            validarTelefone(trimmed);
+            validadas.add(trimmed);
+        }
+        if (validadas.isEmpty()) {
+            throw new IllegalArgumentException("Deve haver ao menos um telefone válido.");
+        }
+        this.telefones = validadas;
+    }
+
+    public void addTelefone(String telefone) {
+        if (telefone == null || telefone.isBlank()) {
+            throw new IllegalArgumentException("Telefone não pode ser vazio.");
+        }
+        String trimmed = telefone.trim();
+        validarTelefone(trimmed);
+        telefones.add(trimmed);
+    }
+
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Atualiza o e-mail do contato.
-     *
-     * <p>Verifica se o valor contém {@code @} e pelo menos um {@code .}
-     * após o arroba como validação mínima de formato.</p>
-     *
-     * @param email novo e-mail; não pode ser {@code null} nem vazio
-     * @throws IllegalArgumentException se {@code email} for inválido
-     */
     public void setEmail(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("E-mail não pode ser vazio.");
         }
         String trimmed = email.trim();
-        int arrobaIdx = trimmed.indexOf('@');
-        if (arrobaIdx < 1 || trimmed.indexOf('.', arrobaIdx) < 0) {
+        if (!EMAIL_PATTERN.matcher(trimmed).matches()) {
             throw new IllegalArgumentException("E-mail inválido: " + trimmed);
         }
         this.email = trimmed;
     }
 
     // -------------------------------------------------------------------------
+    // Validação
+    // -------------------------------------------------------------------------
+
+    private static void validarTelefone(String telefone) {
+        long digitCount = telefone.chars().filter(Character::isDigit).count();
+        if (digitCount < 8) {
+            throw new IllegalArgumentException(
+                "Telefone inválido: " + telefone + " — deve conter ao menos 8 dígitos."
+            );
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // Object
     // -------------------------------------------------------------------------
 
-    /**
-     * Retorna uma representação textual do contato.
-     *
-     * <p>Formato:
-     * <pre>
-     * Nome:      João da Silva
-     * Telefone:  (11) 91234-5678
-     * E-mail:    joao@email.com
-     * </pre>
-     * </p>
-     *
-     * @return string com todos os campos do contato
-     */
     @Override
     public String toString() {
-        return String.format(
-            "Nome:      %s%nTelefone:  %s%nE-mail:    %s",
-            nome, telefone, email
-        );
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nome:      ").append(nome).append(System.lineSeparator());
+        for (int i = 0; i < telefones.size(); i++) {
+            sb.append(i == 0 ? "Telefone:  " : "           ")
+              .append(telefones.get(i))
+              .append(System.lineSeparator());
+        }
+        sb.append("E-mail:    ").append(email);
+        return sb.toString();
     }
 }

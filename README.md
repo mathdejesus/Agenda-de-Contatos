@@ -49,12 +49,15 @@ O **Agenda de Contatos** é um projeto de console desenvolvido em Java com o obj
 
 ### Destaques
 
-- ✅ **Validação de e-mail** — rejeita endereços sem `@` ou sem domínio
+- ✅ **Validação de e-mail** — rejeita endereços sem `@`, sem domínio, ou com TLD inválido
 - ✅ **Validação de telefone** — rejeita números com menos de 8 dígitos
+- ✅ **Múltiplos telefones** — cada contato pode ter quantos telefones desejar
+- ✅ **Interface gráfica** — Swing, com tabela, busca e diálogos de formulário
 - ✅ **Busca por nome ou telefone** — busca parcial e case-insensitive em ambos os campos
 - ✅ **Prevenção de duplicatas** — impede cadastro de dois contatos com o mesmo nome
 - ✅ **Confirmação antes de excluir** — exibe o contato e aguarda `s/n`
 - ✅ **Lista ordenada alfabeticamente** — resultados sempre consistentes
+- ✅ **Persistência em arquivo** — contatos salvos automaticamente em `contatos.txt`
 - ✅ **Separação de responsabilidades** — lógica de negócio isolada em `AgendaService`
 
 ---
@@ -69,7 +72,8 @@ Agenda-de-Contatos/
 │   ├── AgendaService.class
 │   └── Contato.class
 ├── src/                     # Código-fonte Java
-│   ├── Agenda.java          # Camada de apresentação — menu e interação com o usuário
+│   ├── Agenda.java          # Camada de apresentação — entrypoint (GUI ou --cli)
+│   ├── AgendaGUI.java       # Interface gráfica Swing
 │   ├── AgendaService.java   # Camada de serviço — lógica de negócio e coleção de contatos
 │   └── Contato.java         # Modelo de dados — representa um contato
 ├── .gitignore
@@ -161,13 +165,14 @@ cd Agenda-de-Contatos
 ### 2. Compile os arquivos Java
 
 ```bash
-javac -d bin src/Contato.java src/AgendaService.java src/Agenda.java
+javac -d bin src/*.java
 ```
 
 ### 3. Execute a aplicação
 
 ```bash
-java -cp bin Agenda
+java -cp bin Agenda           # Interface gráfica (Swing)
+java -cp bin Agenda --cli     # Terminal interativo
 ```
 
 > **IntelliJ IDEA:** abra a pasta raiz do projeto, aguarde a indexação e execute a classe `Agenda` diretamente pela IDE.
@@ -258,11 +263,14 @@ Cria um novo contato validando todos os campos. Lança `IllegalArgumentException
 |-------------------------|----------|--------------------------------------------------------|
 | `getNome()`             | `String` | Retorna o nome do contato                              |
 | `setNome(String)`       | `void`   | Atualiza o nome; rejeita nulo ou vazio                 |
-| `getTelefone()`         | `String` | Retorna o telefone do contato                          |
-| `setTelefone(String)`   | `void`   | Atualiza o telefone; rejeita nulo, vazio ou menos de 8 dígitos |
+| `getTelefone()`         | `String` | Retorna o primeiro telefone do contato                 |
+| `getTelefones()`        | `List<String>` | Retorna lista imutável de todos os telefones     |
+| `setTelefone(String)`   | `void`   | Substitui todos os telefones por um único; rejeita nulo, vazio ou menos de 8 dígitos |
+| `setTelefones(List)`    | `void`   | Define múltiplos telefones; valida cada um             |
+| `addTelefone(String)`   | `void`   | Adiciona um telefone à lista existente                 |
 | `getEmail()`            | `String` | Retorna o e-mail do contato                            |
-| `setEmail(String)`      | `void`   | Atualiza o e-mail com validação mínima de formato      |
-| `toString()`            | `String` | Representação formatada com nome, telefone e e-mail    |
+| `setEmail(String)`      | `void`   | Atualiza o e-mail com validação por regex              |
+| `toString()`            | `String` | Representação formatada com nome, telefones e e-mail   |
 
 ---
 
@@ -313,21 +321,21 @@ Camada de apresentação com o ponto de entrada (`main`) e os métodos de intera
 
 ## Limitações Conhecidas
 
-- **Sem persistência:** os dados são armazenados apenas em memória. Ao encerrar o programa, todos os contatos são perdidos.
-- **Validação de e-mail simples:** verifica apenas a presença de `@` e `.` após o arroba; não valida o formato completo de um endereço de e-mail.
+- **Validação de e-mail por regex aproximada:** não substitui uma validação completa RFC 5322 (ex.: não valida domínios reais nem subdomínios complexos).
 - **Validação de telefone simples:** verifica apenas a quantidade de dígitos (mínimo 8); não valida DDD, operadora ou formato regional.
 - **Exclusão pelo primeiro resultado:** quando a busca retorna múltiplos contatos, apenas o primeiro é apresentado para exclusão.
+- **Edição pelo primeiro resultado:** quando a busca retorna múltiplos contatos, apenas o primeiro é editável.
 
 ---
 
 ## Melhorias Futuras
 
-- [ ] Persistência em arquivo `.txt` ou `.json`
-- [ ] Validação completa de formato de e-mail (RFC 5322)
-- [ ] Suporte a múltiplos telefones por contato
-- [ ] Edição de contatos existentes
-- [ ] Interface gráfica com JavaFX ou Swing
-- [ ] Testes unitários com JUnit 5
+- [x] Persistência em arquivo `.txt`
+- [x] Validação completa de formato de e-mail (regex)
+- [x] Suporte a múltiplos telefones por contato
+- [x] Edição de contatos existentes
+- [x] Interface gráfica com Swing (padrão ao executar `java Agenda`; use `--cli` para terminal)
+- [x] Testes unitários (com `assert` do Java, sem JUnit)
 
 ---
 

@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,16 @@ public class AgendaService {
     /** Lista interna de contatos gerenciados por este serviço. */
     private final List<Contato> contatos = new ArrayList<>();
 
+    /** Caminho do arquivo de persistência dos contatos. */
+    private static final String ARQUIVO = "contatos.txt";
+
+    /**
+     * Cria um serviço de agenda e carrega os contatos salvos anteriormente.
+     */
+    public AgendaService() {
+        loadFromFile();
+    }
+
     // -------------------------------------------------------------------------
     // Operações CRUD
     // -------------------------------------------------------------------------
@@ -47,6 +58,7 @@ public class AgendaService {
             );
         }
         contatos.add(contato);
+        saveToFile();
     }
 
     /**
@@ -100,8 +112,11 @@ public class AgendaService {
         List<Contato> resultado = new ArrayList<>();
         String termoBusca = trecho.trim().toLowerCase();
         for (Contato c : contatos) {
-            if (c.getTelefone().toLowerCase().contains(termoBusca)) {
-                resultado.add(c);
+            for (String tel : c.getTelefones()) {
+                if (tel.toLowerCase().contains(termoBusca)) {
+                    resultado.add(c);
+                    break;
+                }
             }
         }
         resultado.sort((a, b) ->
@@ -123,10 +138,112 @@ public class AgendaService {
         for (int i = 0; i < contatos.size(); i++) {
             if (contatos.get(i).getNome().equalsIgnoreCase(nome.trim())) {
                 contatos.remove(i);
+                saveToFile();
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Substitui os dados de um contato identificado pelo nome original.
+     *
+     * @param nomeOriginal nome exato (case-insensitive) do contato a editar
+     * @param atualizado   novo {@link Contato} com os dados atualizados
+     * @return {@code true} se o contato foi encontrado e atualizado
+     * @throws IllegalArgumentException se algum parâmetro for inválido
+     * @throws IllegalStateException    se o novo nome já pertencer a outro contato
+     */
+    public boolean editar(String nomeOriginal, Contato atualizado) {
+        if (nomeOriginal == null || nomeOriginal.isBlank()) {
+            throw new IllegalArgumentException("Nome original não pode ser vazio.");
+        }
+        if (atualizado == null) {
+            throw new IllegalArgumentException("Contato atualizado não pode ser nulo.");
+        }
+
+        int index = -1;
+        for (int i = 0; i < contatos.size(); i++) {
+            if (contatos.get(i).getNome().equalsIgnoreCase(nomeOriginal.trim())) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index == -1) {
+            return false;
+        }
+
+        // Se o nome foi alterado, verificar duplicata com outros contatos
+        if (!atualizado.getNome().equalsIgnoreCase(nomeOriginal.trim())
+            && existePorNome(atualizado.getNome())) {
+            throw new IllegalStateException(
+                "Já existe um contato com o nome: " + atualizado.getNome()
+            );
+        }
+
+        contatos.set(index, atualizado);
+        saveToFile();
+        return true;
+    }
+
+    // -------------------------------------------------------------------------
+    // Persistência
+    // -------------------------------------------------------------------------
+
+    /**
+     * Salva todos os contatos no arquivo {@link #ARQUIVO} no formato
+     * {@code nome#telefone#email}, um por linha.
+     *
+     * <p>Erros de I/O são logados no stderr sem interromper a execução.</p>
+     */
+    private void saveToFile() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(ARQUIVO))) {
+            for (Contato c : contatos) {
+                String telefonesStr = String.join(";", c.getTelefones());
+                writer.println(c.getNome() + "#" + telefonesStr + "#" + c.getEmail());
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar contatos: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Carrega os contatos do arquivo {@link #ARQUIVO}.
+     *
+     * <p>Se o arquivo não existir, a lista permanece vazia. Linhas
+     * inválidas são ignoradas com aviso no stderr.</p>
+     */
+    private void loadFromFile() {
+        File arquivo = new File(ARQUIVO);
+        if (!arquivo.exists()) {
+            return;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                linha = linha.trim();
+                if (linha.isBlank()) continue;
+                String[] partes = linha.split("#", 3);
+                if (partes.length < 3) {
+                    System.err.println("Ignorando linha (formato inválido): " + linha);
+                    continue;
+                }
+                try {
+                    String[] telefonesArray = partes[1].split(";", -1);
+                    List<String> telefonesList = new ArrayList<>();
+                    for (String tel : telefonesArray) {
+                        String t = tel.trim();
+                        if (!t.isEmpty()) telefonesList.add(t);
+                    }
+                    contatos.add(new Contato(partes[0], telefonesList, partes[2]));
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Ignorando linha (dados inválidos): " + linha);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar contatos: " + e.getMessage());
+        }
     }
 
     /**
