@@ -82,7 +82,14 @@ public class Contato {
         if (telefone == null || telefone.isBlank()) {
             throw new IllegalArgumentException("Telefone não pode ser vazio.");
         }
-        this.telefone = telefone.trim();
+        String trimmed = telefone.trim();
+        long digitCount = trimmed.chars().filter(Character::isDigit).count();
+        if (digitCount < 8) {
+            throw new IllegalArgumentException(
+                "Telefone inválido: " + trimmed + " — deve conter ao menos 8 dígitos."
+            );
+        }
+        this.telefone = trimmed;
     }
 
     /**

@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Serviço responsável pela lógica de negócio da agenda telefônica.
@@ -82,6 +81,32 @@ public class AgendaService {
                 resultado.add(c);
             }
         }
+        resultado.sort((a, b) ->
+            a.getNome().compareToIgnoreCase(b.getNome())
+        );
+        return resultado;
+    }
+
+    /**
+     * Busca contatos cujo telefone contenha o trecho informado.
+     *
+     * @param trecho parte do telefone a pesquisar; nulo ou vazio retorna lista vazia
+     * @return lista (possivelmente vazia) com os contatos correspondentes
+     */
+    public List<Contato> buscarPorTelefone(String trecho) {
+        if (trecho == null || trecho.isBlank()) {
+            return new ArrayList<>();
+        }
+        List<Contato> resultado = new ArrayList<>();
+        String termoBusca = trecho.trim().toLowerCase();
+        for (Contato c : contatos) {
+            if (c.getTelefone().toLowerCase().contains(termoBusca)) {
+                resultado.add(c);
+            }
+        }
+        resultado.sort((a, b) ->
+            a.getNome().compareToIgnoreCase(b.getNome())
+        );
         return resultado;
     }
 

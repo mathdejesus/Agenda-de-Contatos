@@ -53,8 +53,9 @@ public class Agenda {
                 case 1 -> adicionarContato(service, scanner);
                 case 2 -> listarContatos(service);
                 case 3 -> procurarContato(service, scanner);
-                case 4 -> excluirContato(service, scanner);
-                case 5 -> {
+                case 4 -> procurarPorTelefone(service, scanner);
+                case 5 -> excluirContato(service, scanner);
+                case 6 -> {
                     printLinha();
                     System.out.println("Encerrando a agenda. Até logo!");
                     printLinha();
@@ -63,7 +64,7 @@ public class Agenda {
                 }
                 default -> {
                     printLinha();
-                    System.out.println("Opção inválida. Escolha entre 1 e 5.");
+                    System.out.println("Opção inválida. Escolha entre 1 e 6.");
                     printLinha();
                 }
             }
@@ -141,7 +142,46 @@ public class Agenda {
         System.out.print("Digite o nome (ou parte dele): ");
         String trecho = scanner.nextLine().trim();
 
+        if (trecho.isBlank()) {
+            System.out.println("Termo de busca não pode ser vazio.");
+            printLinha();
+            return;
+        }
+
         List<Contato> encontrados = service.buscarPorNome(trecho);
+
+        printLinha();
+        if (encontrados.isEmpty()) {
+            System.out.println("Nenhum contato encontrado para: \"" + trecho + "\"");
+        } else {
+            System.out.printf("%d contato(s) encontrado(s):%n", encontrados.size());
+            printLinha();
+            for (Contato c : encontrados) {
+                System.out.println(c);
+                printLinha();
+            }
+        }
+    }
+
+    /**
+     * Solicita um trecho do telefone e exibe todos os contatos que correspondam
+     * à busca parcial.
+     *
+     * @param service instância de {@link AgendaService}
+     * @param scanner leitor de entrada do usuário
+     */
+    public static void procurarPorTelefone(AgendaService service, Scanner scanner) {
+        printLinha();
+        System.out.print("Digite o telefone (ou parte dele): ");
+        String trecho = scanner.nextLine().trim();
+
+        if (trecho.isBlank()) {
+            System.out.println("Termo de busca não pode ser vazio.");
+            printLinha();
+            return;
+        }
+
+        List<Contato> encontrados = service.buscarPorTelefone(trecho);
 
         printLinha();
         if (encontrados.isEmpty()) {
@@ -190,7 +230,7 @@ public class Agenda {
 
         printLinha();
         if ("s".equals(confirmacao)) {
-            boolean removido = service.excluir(nome);
+            boolean removido = service.excluir(encontrados.get(0).getNome());
             System.out.println(removido
                 ? "Contato excluído com sucesso!"
                 : "Não foi possível excluir o contato."
@@ -214,8 +254,9 @@ public class Agenda {
         System.out.println("1 - Adicionar Contato");
         System.out.println("2 - Listar Contatos");
         System.out.println("3 - Procurar Contato");
-        System.out.println("4 - Excluir Contato");
-        System.out.println("5 - Sair");
+        System.out.println("4 - Buscar por Telefone");
+        System.out.println("5 - Excluir Contato");
+        System.out.println("6 - Sair");
         System.out.print("Escolha uma opção: ");
     }
 

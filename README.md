@@ -38,21 +38,23 @@ O **Agenda de Contatos** é um projeto de console desenvolvido em Java com o obj
 
 ## Funcionalidades
 
-| # | Opção no Menu     | Descrição                                                              |
-|---|-------------------|------------------------------------------------------------------------|
-| 1 | Adicionar Contato | Cadastra um novo contato (nome, telefone e e-mail) com validação       |
-| 2 | Listar Contatos   | Exibe todos os contatos em ordem alfabética                            |
-| 3 | Procurar Contato  | Busca parcial e case-insensitive pelo nome                             |
-| 4 | Excluir Contato   | Remove um contato com confirmação prévia                               |
-| 5 | Sair              | Encerra a aplicação                                                    |
+| # | Opção no Menu      | Descrição                                                              |
+|---|--------------------|------------------------------------------------------------------------|
+| 1 | Adicionar Contato  | Cadastra um novo contato (nome, telefone e e-mail) com validação       |
+| 2 | Listar Contatos    | Exibe todos os contatos em ordem alfabética                            |
+| 3 | Procurar Contato   | Busca parcial e case-insensitive pelo nome                             |
+| 4 | Buscar por Telefone| Busca parcial pelo telefone                                            |
+| 5 | Excluir Contato    | Remove um contato com confirmação prévia                               |
+| 6 | Sair               | Encerra a aplicação                                                    |
 
-### Destaques da v2
+### Destaques
 
 - ✅ **Validação de e-mail** — rejeita endereços sem `@` ou sem domínio
+- ✅ **Validação de telefone** — rejeita números com menos de 8 dígitos
+- ✅ **Busca por nome ou telefone** — busca parcial e case-insensitive em ambos os campos
 - ✅ **Prevenção de duplicatas** — impede cadastro de dois contatos com o mesmo nome
-- ✅ **Busca parcial e case-insensitive** — encontra "ana" ao pesquisar "AN"
 - ✅ **Confirmação antes de excluir** — exibe o contato e aguarda `s/n`
-- ✅ **Lista ordenada alfabeticamente** — resultado sempre consistente
+- ✅ **Lista ordenada alfabeticamente** — resultados sempre consistentes
 - ✅ **Separação de responsabilidades** — lógica de negócio isolada em `AgendaService`
 
 ---
@@ -103,12 +105,13 @@ Agenda-de-Contatos/
 ├──────────────────────────────────────────────────┤
 │ - contatos : List<Contato>                       │
 ├──────────────────────────────────────────────────┤
-│ + adicionar(Contato)        : void               │
-│ + listarTodos()             : List<Contato>      │
-│ + buscarPorNome(String)     : List<Contato>      │
-│ + excluir(String)           : boolean            │
-│ + existePorNome(String)     : boolean            │
-│ + total()                   : int                │
+│ + adicionar(Contato)            : void               │
+│ + listarTodos()                 : List<Contato>      │
+│ + buscarPorNome(String)         : List<Contato>      │
+│ + buscarPorTelefone(String)     : List<Contato>      │
+│ + excluir(String)               : boolean            │
+│ + existePorNome(String)         : boolean            │
+│ + total()                       : int                │
 └──────────────────────────────────────────────────┘
                         ▲
                         │ usa
@@ -117,15 +120,16 @@ Agenda-de-Contatos/
 ├──────────────────────────────────────────────────┤
 │ - LINHA : String  (constante)                    │
 ├──────────────────────────────────────────────────┤
-│ + main(String[])                        : void   │
-│ + adicionarContato(AgendaService, Scanner) : void│
-│ + listarContatos(AgendaService)          : void  │
-│ + procurarContato(AgendaService, Scanner) : void │
-│ + excluirContato(AgendaService, Scanner) : void  │
-│ + mostraMenu()                          : void   │
-│ + printLinha()                          : void   │
-│ - lerOpcao(Scanner)                     : int    │
-│ - lerCampo(Scanner, String)             : String │
+│ + main(String[])                           : void   │
+│ + adicionarContato(AgendaService, Scanner)   : void   │
+│ + listarContatos(AgendaService)             : void   │
+│ + procurarContato(AgendaService, Scanner)    : void   │
+│ + procurarPorTelefone(AgendaService, Scanner): void   │
+│ + excluirContato(AgendaService, Scanner)     : void   │
+│ + mostraMenu()                             : void   │
+│ + printLinha()                             : void   │
+│ - lerOpcao(Scanner)                        : int    │
+│ - lerCampo(Scanner, String)                : String │
 └──────────────────────────────────────────────────┘
 ```
 
@@ -179,8 +183,9 @@ Bem-vindo à Agenda Telefônica!
 1 - Adicionar Contato
 2 - Listar Contatos
 3 - Procurar Contato
-4 - Excluir Contato
-5 - Sair
+4 - Buscar por Telefone
+5 - Excluir Contato
+6 - Sair
 Escolha uma opção: 1
 --------------------------------------------------
 Nome: João da Silva
@@ -206,6 +211,19 @@ E-mail:    joao@email.com
 === AGENDA TELEFÔNICA ===
 ...
 Escolha uma opção: 4
+--------------------------------------------------
+Digite o telefone (ou parte dele): 91234
+--------------------------------------------------
+1 contato(s) encontrado(s):
+--------------------------------------------------
+Nome:      João da Silva
+Telefone:  (11) 91234-5678
+E-mail:    joao@email.com
+--------------------------------------------------
+
+=== AGENDA TELEFÔNICA ===
+...
+Escolha uma opção: 5
 --------------------------------------------------
 Digite o nome do contato a excluir: João da Silva
 Contato a ser excluído:
@@ -241,7 +259,7 @@ Cria um novo contato validando todos os campos. Lança `IllegalArgumentException
 | `getNome()`             | `String` | Retorna o nome do contato                              |
 | `setNome(String)`       | `void`   | Atualiza o nome; rejeita nulo ou vazio                 |
 | `getTelefone()`         | `String` | Retorna o telefone do contato                          |
-| `setTelefone(String)`   | `void`   | Atualiza o telefone; rejeita nulo ou vazio             |
+| `setTelefone(String)`   | `void`   | Atualiza o telefone; rejeita nulo, vazio ou menos de 8 dígitos |
 | `getEmail()`            | `String` | Retorna o e-mail do contato                            |
 | `setEmail(String)`      | `void`   | Atualiza o e-mail com validação mínima de formato      |
 | `toString()`            | `String` | Representação formatada com nome, telefone e e-mail    |
@@ -266,7 +284,8 @@ Inicializa uma agenda vazia.
 |---------------------------------|------------------|-----------------------------------------------------------------------------------|
 | `adicionar(Contato)`            | `void`           | Adiciona o contato; lança exceção se nulo ou nome duplicado                       |
 | `listarTodos()`                 | `List<Contato>`  | Retorna lista imutável de todos os contatos em ordem alfabética                   |
-| `buscarPorNome(String)`         | `List<Contato>`  | Busca parcial e case-insensitive; retorna lista vazia se não encontrar nada       |
+| `buscarPorNome(String)`         | `List<Contato>`  | Busca parcial e case-insensitive pelo nome; resultados em ordem alfabética       |
+| `buscarPorTelefone(String)`     | `List<Contato>`  | Busca parcial pelo telefone; resultados em ordem alfabética                       |
 | `excluir(String)`               | `boolean`        | Remove o primeiro contato com nome exato (case-insensitive); retorna `true` se removido |
 | `existePorNome(String)`         | `boolean`        | Verifica se há contato com o nome informado (case-insensitive)                    |
 | `total()`                       | `int`            | Retorna a quantidade de contatos cadastrados                                      |
@@ -285,6 +304,7 @@ Camada de apresentação com o ponto de entrada (`main`) e os métodos de intera
 | `adicionarContato(AgendaService, Scanner)`        | Lê dados, cria o contato e delega ao serviço                |
 | `listarContatos(AgendaService)`                   | Exibe todos os contatos em formato numerado                 |
 | `procurarContato(AgendaService, Scanner)`         | Lê um trecho do nome e exibe os resultados encontrados      |
+| `procurarPorTelefone(AgendaService, Scanner)`     | Lê um trecho do telefone e exibe os resultados encontrados  |
 | `excluirContato(AgendaService, Scanner)`          | Lê o nome, exibe o contato e pede confirmação antes de excluir |
 | `mostraMenu()`                                    | Exibe o menu de opções no terminal                          |
 | `printLinha()`                                    | Imprime uma linha separadora de 50 traços                   |
@@ -295,6 +315,7 @@ Camada de apresentação com o ponto de entrada (`main`) e os métodos de intera
 
 - **Sem persistência:** os dados são armazenados apenas em memória. Ao encerrar o programa, todos os contatos são perdidos.
 - **Validação de e-mail simples:** verifica apenas a presença de `@` e `.` após o arroba; não valida o formato completo de um endereço de e-mail.
+- **Validação de telefone simples:** verifica apenas a quantidade de dígitos (mínimo 8); não valida DDD, operadora ou formato regional.
 - **Exclusão pelo primeiro resultado:** quando a busca retorna múltiplos contatos, apenas o primeiro é apresentado para exclusão.
 
 ---
