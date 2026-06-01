@@ -38,14 +38,14 @@ O **Agenda de Contatos** é um projeto de console desenvolvido em Java com o obj
 
 ## Funcionalidades
 
-| # | Opção no Menu      | Descrição                                                              |
-|---|--------------------|------------------------------------------------------------------------|
-| 1 | Adicionar Contato  | Cadastra um novo contato (nome, telefone e e-mail) com validação       |
-| 2 | Listar Contatos    | Exibe todos os contatos em ordem alfabética                            |
-| 3 | Procurar Contato   | Busca parcial e case-insensitive pelo nome                             |
-| 4 | Buscar por Telefone| Busca parcial pelo telefone                                            |
-| 5 | Excluir Contato    | Remove um contato com confirmação prévia                               |
-| 6 | Sair               | Encerra a aplicação                                                    |
+| #   | Opção no Menu       | Descrição                                                        |
+| --- | ------------------- | ---------------------------------------------------------------- |
+| 1   | Adicionar Contato   | Cadastra um novo contato (nome, telefone e e-mail) com validação |
+| 2   | Listar Contatos     | Exibe todos os contatos em ordem alfabética                      |
+| 3   | Procurar Contato    | Busca parcial e case-insensitive pelo nome                       |
+| 4   | Buscar por Telefone | Busca parcial pelo telefone                                      |
+| 5   | Excluir Contato     | Remove um contato com confirmação prévia                         |
+| 6   | Sair                | Encerra a aplicação                                              |
 
 ### Destaques
 
@@ -141,9 +141,9 @@ Agenda-de-Contatos/
 
 ## Pré-requisitos
 
-| Ferramenta | Versão mínima | Download                                      |
-|------------|---------------|-----------------------------------------------|
-| Java JDK   | 8+            | [https://adoptium.net](https://adoptium.net)  |
+| Ferramenta | Versão mínima | Download                                     |
+| ---------- | ------------- | -------------------------------------------- |
+| Java JDK   | 21            | [https://adoptium.net](https://adoptium.net) |
 
 Verifique se o Java está instalado:
 
@@ -165,7 +165,7 @@ cd Agenda-de-Contatos
 ### 2. Compile os arquivos Java
 
 ```bash
-javac -d bin src/*.java
+javac --release 21 -d bin src/*.java
 ```
 
 ### 3. Execute a aplicação
@@ -259,18 +259,18 @@ Cria um novo contato validando todos os campos. Lança `IllegalArgumentException
 
 #### Métodos
 
-| Método                  | Retorno  | Descrição                                              |
-|-------------------------|----------|--------------------------------------------------------|
-| `getNome()`             | `String` | Retorna o nome do contato                              |
-| `setNome(String)`       | `void`   | Atualiza o nome; rejeita nulo ou vazio                 |
-| `getTelefone()`         | `String` | Retorna o primeiro telefone do contato                 |
-| `getTelefones()`        | `List<String>` | Retorna lista imutável de todos os telefones     |
-| `setTelefone(String)`   | `void`   | Substitui todos os telefones por um único; rejeita nulo, vazio ou menos de 8 dígitos |
-| `setTelefones(List)`    | `void`   | Define múltiplos telefones; valida cada um             |
-| `addTelefone(String)`   | `void`   | Adiciona um telefone à lista existente                 |
-| `getEmail()`            | `String` | Retorna o e-mail do contato                            |
-| `setEmail(String)`      | `void`   | Atualiza o e-mail com validação por regex              |
-| `toString()`            | `String` | Representação formatada com nome, telefones e e-mail   |
+| Método                | Retorno        | Descrição                                                                            |
+| --------------------- | -------------- | ------------------------------------------------------------------------------------ |
+| `getNome()`           | `String`       | Retorna o nome do contato                                                            |
+| `setNome(String)`     | `void`         | Atualiza o nome; rejeita nulo ou vazio                                               |
+| `getTelefone()`       | `String`       | Retorna o primeiro telefone do contato                                               |
+| `getTelefones()`      | `List<String>` | Retorna lista imutável de todos os telefones                                         |
+| `setTelefone(String)` | `void`         | Substitui todos os telefones por um único; rejeita nulo, vazio ou menos de 8 dígitos |
+| `setTelefones(List)`  | `void`         | Define múltiplos telefones; valida cada um                                           |
+| `addTelefone(String)` | `void`         | Adiciona um telefone à lista existente                                               |
+| `getEmail()`          | `String`       | Retorna o e-mail do contato                                                          |
+| `setEmail(String)`    | `void`         | Atualiza o e-mail com validação por regex                                            |
+| `toString()`          | `String`       | Representação formatada com nome, telefones e e-mail                                 |
 
 ---
 
@@ -288,15 +288,15 @@ Inicializa uma agenda vazia.
 
 #### Métodos
 
-| Método                          | Retorno          | Descrição                                                                         |
-|---------------------------------|------------------|-----------------------------------------------------------------------------------|
-| `adicionar(Contato)`            | `void`           | Adiciona o contato; lança exceção se nulo ou nome duplicado                       |
-| `listarTodos()`                 | `List<Contato>`  | Retorna lista imutável de todos os contatos em ordem alfabética                   |
-| `buscarPorNome(String)`         | `List<Contato>`  | Busca parcial e case-insensitive pelo nome; resultados em ordem alfabética       |
-| `buscarPorTelefone(String)`     | `List<Contato>`  | Busca parcial pelo telefone; resultados em ordem alfabética                       |
-| `excluir(String)`               | `boolean`        | Remove o primeiro contato com nome exato (case-insensitive); retorna `true` se removido |
-| `existePorNome(String)`         | `boolean`        | Verifica se há contato com o nome informado (case-insensitive)                    |
-| `total()`                       | `int`            | Retorna a quantidade de contatos cadastrados                                      |
+| Método                      | Retorno         | Descrição                                                                               |
+| --------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| `adicionar(Contato)`        | `void`          | Adiciona o contato; lança exceção se nulo ou nome duplicado                             |
+| `listarTodos()`             | `List<Contato>` | Retorna lista imutável de todos os contatos em ordem alfabética                         |
+| `buscarPorNome(String)`     | `List<Contato>` | Busca parcial e case-insensitive pelo nome; resultados em ordem alfabética              |
+| `buscarPorTelefone(String)` | `List<Contato>` | Busca parcial pelo telefone; resultados em ordem alfabética                             |
+| `excluir(String)`           | `boolean`       | Remove o primeiro contato com nome exato (case-insensitive); retorna `true` se removido |
+| `existePorNome(String)`     | `boolean`       | Verifica se há contato com o nome informado (case-insensitive)                          |
+| `total()`                   | `int`           | Retorna a quantidade de contatos cadastrados                                            |
 
 ---
 
@@ -306,16 +306,16 @@ Camada de apresentação com o ponto de entrada (`main`) e os métodos de intera
 
 #### Métodos públicos
 
-| Método                                            | Descrição                                                   |
-|---------------------------------------------------|-------------------------------------------------------------|
-| `main(String[])`                                  | Inicia a aplicação e o loop do menu interativo              |
-| `adicionarContato(AgendaService, Scanner)`        | Lê dados, cria o contato e delega ao serviço                |
-| `listarContatos(AgendaService)`                   | Exibe todos os contatos em formato numerado                 |
-| `procurarContato(AgendaService, Scanner)`         | Lê um trecho do nome e exibe os resultados encontrados      |
-| `procurarPorTelefone(AgendaService, Scanner)`     | Lê um trecho do telefone e exibe os resultados encontrados  |
-| `excluirContato(AgendaService, Scanner)`          | Lê o nome, exibe o contato e pede confirmação antes de excluir |
-| `mostraMenu()`                                    | Exibe o menu de opções no terminal                          |
-| `printLinha()`                                    | Imprime uma linha separadora de 50 traços                   |
+| Método                                        | Descrição                                                      |
+| --------------------------------------------- | -------------------------------------------------------------- |
+| `main(String[])`                              | Inicia a aplicação e o loop do menu interativo                 |
+| `adicionarContato(AgendaService, Scanner)`    | Lê dados, cria o contato e delega ao serviço                   |
+| `listarContatos(AgendaService)`               | Exibe todos os contatos em formato numerado                    |
+| `procurarContato(AgendaService, Scanner)`     | Lê um trecho do nome e exibe os resultados encontrados         |
+| `procurarPorTelefone(AgendaService, Scanner)` | Lê um trecho do telefone e exibe os resultados encontrados     |
+| `excluirContato(AgendaService, Scanner)`      | Lê o nome, exibe o contato e pede confirmação antes de excluir |
+| `mostraMenu()`                                | Exibe o menu de opções no terminal                             |
+| `printLinha()`                                | Imprime uma linha separadora de 50 traços                      |
 
 ---
 
@@ -341,7 +341,7 @@ Camada de apresentação com o ponto de entrada (`main`) e os métodos de intera
 
 ## Tecnologias Utilizadas
 
-- **Java SE 8+**
+- **Java SE 21**
 - **Java Collections Framework** (`ArrayList`, `List`, `Collections`)
 - **java.util.Scanner** para leitura do terminal
 - **Javadoc** para documentação do código
