@@ -21,3 +21,6 @@ Thumbs.db
 
 # Runtime persistence
 contatos.txt
+
+# Tool output
+.github/modernize/
