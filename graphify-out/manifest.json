@@ -1,0 +1,47 @@
+{
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/Agenda.java": {
+    "mtime": 1780251650.6532927,
+    "ast_hash": "997de43527c9113c415c796976797c2b",
+    "semantic_hash": "997de43527c9113c415c796976797c2b"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/AgendaGUI.java": {
+    "mtime": 1780251633.973383,
+    "ast_hash": "16fced4c0da74b3c6347d2f0976a77ec",
+    "semantic_hash": "16fced4c0da74b3c6347d2f0976a77ec"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/AgendaService.java": {
+    "mtime": 1780251283.2202826,
+    "ast_hash": "6b6d1ccb0f8e4a42c6c893138077dc0d",
+    "semantic_hash": "6b6d1ccb0f8e4a42c6c893138077dc0d"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/Contato.java": {
+    "mtime": 1780251260.209407,
+    "ast_hash": "a9561f7203341fa6cd985360186a1568",
+    "semantic_hash": "a9561f7203341fa6cd985360186a1568"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/TestAgendaService.java": {
+    "mtime": 1780252039.8754907,
+    "ast_hash": "a894d5dbf93fb03df189b2ec9d9fe984",
+    "semantic_hash": "a894d5dbf93fb03df189b2ec9d9fe984"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/TestContato.java": {
+    "mtime": 1780251937.834938,
+    "ast_hash": "f2a998ca811b1348e675ee0f7432e88f",
+    "semantic_hash": "f2a998ca811b1348e675ee0f7432e88f"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/src/TestPersistencia.java": {
+    "mtime": 1780251963.0668273,
+    "ast_hash": "5836bf6f4997b032845b506eecfba3c6",
+    "semantic_hash": "5836bf6f4997b032845b506eecfba3c6"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/AGENTS.md": {
+    "mtime": 1780252066.8043725,
+    "ast_hash": "db163b982abcfd14027ab4a347b02367",
+    "semantic_hash": "db163b982abcfd14027ab4a347b02367"
+  },
+  "/home/matheus/MeusProjetos/Agenda-de-Contatos/README.md": {
+    "mtime": 1780252053.3924313,
+    "ast_hash": "05da497ca75e62225815ef9f0a02c28c",
+    "semantic_hash": "05da497ca75e62225815ef9f0a02c28c"
+  }
+}

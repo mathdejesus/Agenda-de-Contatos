@@ -2,6 +2,12 @@
 
 Java GUI/CLI phonebook CRUD. Pure Java SE (8+), no external deps, no build tool.
 
+## Context Navigation
+when you need to understand the codebase, docs or any files in this project:
+    - ALWAYS query the knoledge graph first: '/graphify query "your que question"
+    - Only read raw files if I explicity say "read the file" or "look at the raw file"
+    - Use 'graphify-out/wiki/index.md' as your navigation entrypoint for browsing struc
+
 ## Build & Run
 ```bash
 javac -d bin src/*.java
